@@ -8,6 +8,11 @@ using System.Collections.Generic;
 // Для начала работы нужно ввести пароль ABOBA латинскими буквами.
 // При нажатии на N открывает следующую ссылку.
 // При нажатии на R открывает рикрол.
+// При нажатии на O запускает custom_error.vbs.
+// При нажатии на S запускает custom_shutdown.vbs.
+// При нажатии на D запускает custom_dj_watermelon.vbs.
+// При нажатии на B запускает custom_beer.vbs.
+// При нажатии на I запускает custom_rickroll.vbs.
 // При нажатии на E всплывает окно о закрытии,
 // для дальнейшей работы приложения нужно заново набрать пароль.
 // Все, что не закомментировано, скопировано отсюда: https://upread.ru/art.php?id=57
@@ -91,6 +96,11 @@ namespace KeyCatcher
                 case Keys.E: CaseE(); break;
                 case Keys.N: CaseN(); break;
                 case Keys.R: CaseR(); break;
+                case Keys.O: CaseO(); break;
+                case Keys.S: CaseS(); break;
+                case Keys.B: CaseB(); break;
+                case Keys.D: CaseD(); break;
+                case Keys.I: CaseI(); break;
             }
         }
 
@@ -174,6 +184,36 @@ namespace KeyCatcher
         private static void CaseR()
         {
             Process.Start(@"..\rickroll.vbs");
+        }
+
+        // Запуск custom_error.vbs
+        private static void CaseO()
+        {
+            Process.Start(@"..\..\error\custom_error.vbs");
+        }
+
+        // Запуск custom_shutdown.vbs
+        private static void CaseS()
+        {
+            Process.Start(@"..\..\shutdown\custom_shutdown.vbs");
+        }
+
+        // Запуск custom_dj_watermelon.vbs
+        private static void CaseD()
+        {
+            Process.Start(@"..\..\dj_watermelon\custom_dj_watermelon.vbs");
+        }
+
+        // Запуск custom_beer.vbs
+        private static void CaseB()
+        {
+            Process.Start(@"..\..\beer\custom_beer.vbs");
+        }
+
+        // Запуск custom_rickroll.vbs
+        private static void CaseI()
+        {
+            Process.Start(@"..\..\rickroll\custom_rickroll.vbs");
         }
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
