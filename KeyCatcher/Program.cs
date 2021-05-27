@@ -159,10 +159,7 @@ namespace KeyCatcher
                     {
                         mayWork = true;
                     }
-                    else
-                    {
-                        aboba.Clear();
-                    }
+		    aboba.Clear();
                     break;
 
                 default:
