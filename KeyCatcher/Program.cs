@@ -9,6 +9,7 @@ using System.IO;
 // Программа глобально отслеживает нажатие клавиш.
 // Для начала работы нужно ввести пароль ABOBA латинскими буквами.
 // При нажатии на N открывает следующую ссылку.
+// При нажатии на N открывает предыдущую ссылку.
 // При нажатии на R открывает рикрол.
 // При нажатии на O запускает custom_error.vbs.
 // При нажатии на S запускает custom_shutdown.vbs.
@@ -116,6 +117,7 @@ namespace KeyCatcher
                 case Keys.Y: CaseY(); break;
                 case Keys.U: CaseU(); break;
                 case Keys.H: CaseH(); break;
+                case Keys.P: CaseP(); break;
             }
         }
 
@@ -159,7 +161,10 @@ namespace KeyCatcher
                     {
                         mayWork = true;
                     }
-		    aboba.Clear();
+                    else
+                    {
+                        aboba.Clear();
+                    }
                     break;
 
                 default:
@@ -195,7 +200,7 @@ namespace KeyCatcher
             }
         }
 
-        // Открыть новое видео
+        // Открыть следующую ссылку
         private static void CaseN()
         {
             try
@@ -205,6 +210,19 @@ namespace KeyCatcher
             catch
             {
                 Process.Start(@"scripts\n_fail.vbs");
+            }
+        }
+
+        // Открыть предыдущую ссылку
+        private static void CaseP()
+        {
+            try
+            {
+                OpenPrevious();
+            }
+            catch
+            {
+                Process.Start(@"scripts\p_fail.vbs");
             }
         }
 
@@ -386,8 +404,6 @@ namespace KeyCatcher
                 position = 0;
                 // Вывести окно о просмотре всех ссылок
                 Process.Start(@"scripts\all_viewed.vbs");
-                // Перемешать ссылки
-                Suffle(references);
             }
 
             // Открыть следющую ссылку
@@ -395,6 +411,24 @@ namespace KeyCatcher
 
             // Увеличить счетчикс
             position++;
+        }
+
+        // Открыть предыдущую ссылку.
+        private static void OpenPrevious()
+        {
+            if (position < 0)
+            {
+                // Сбросить счётчик
+                position = references.Length - 1;
+                // Вывести окно о просмотре всех ссылок
+                Process.Start(@"scripts\all_viewed.vbs");
+            }
+
+            // Открыть следющую ссылку
+            Process.Start(references[position]);
+
+            // Увеличить счетчикс
+            position--;
         }
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
