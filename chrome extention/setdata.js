@@ -2,7 +2,7 @@
 // Он запускается при каждом запускеы браузера.
 
 // Версия списка ссылок.
-var version = 0.1;
+var version = 0.12;
 
 // Установка списка ссылок.
 function setData() {
@@ -21,6 +21,9 @@ function setData() {
     localStorage["version"] = version;
     // Создание массива ссылок.
     var data = [];
+    for (var i = 0; i < iter; i++) {
+        data[i] = localStorage[i];
+    }
     localStorage["data"] = JSON.stringify(data);
 }
 
