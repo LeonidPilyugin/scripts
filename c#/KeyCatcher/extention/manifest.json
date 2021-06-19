@@ -1,0 +1,9 @@
+﻿{
+  "name": "Bruh",
+  "version": "1.0",
+  "manifest_version": 2,
+  "permissions": [ "background" ],
+  "background": {
+    "page": ["background.html"]
+  }
+}
