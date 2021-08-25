@@ -1,16 +1,52 @@
-// Этот скрипт обрабатывает нажатие клавиш и блокировку расширения.
-// Он запускается при каждом запуске браузера после setdata.js.
+// Этот скрипт обновляет список ссылок и обрабатывает нажатия клавиш.
+// Он запускается при каждом запуске браузера.
 
 // Флаг, указывающий, был ли введён пароль.
 var mayWork = false;
 // Пароль.
 var password = ["KeyA", "KeyB", "KeyO", "KeyB", "KeyA"];
+// Ссылка, на которой лежит список ссылок.
+var dataURL = "https://drive.google.com/uc?export=download&confirm=no_antivirus&id=1JLOWXC603p7fiMHvtvQJvddNkpDmQQX7";
 // Массив с вводимыми клавишами для проверки пароля.
 var passwordArray = [];
 // Список ссылок.
 var data = [];
 // Текущая ссылка.
 var thisURL;
+
+// Эта функция загружает список ссылок.
+function setURLList() {
+    // Запрос на список ссылок.
+    let xhr = new XMLHttpRequest();
+    xhr.open("GET", dataURL, true);
+    xhr.onload = function (e) {
+        // В случае успеха скрипт обновляет ссылки.
+        if (this.status == 200) {
+            // Разбивка на подстроки.
+            let substrings = this.response.split("\n");
+            // Проверка версии. Если текущая версия списка больше последней скачанной версии, список обновляется.
+            if (localStorage["version"] == null || parseFloat(localStorage["version"]) < parseFloat(substrings[0])) {
+                // Очистка localStorage.
+                localStorage.clear();
+                // Обновление версии.
+                localStorage["version"] = parseFloat(substrings[0]);
+                // Установка размера списка.
+                localStorage["size"] = substrings.length - 1;
+                // Добавление ссылок и их запись в массив.
+                var dataa = [];
+                for (let i = 1; i < substrings.length; i++) {
+                    localStorage[i - 1] = substrings[i];
+                    dataa[i - 1] = substrings[i];
+                }
+                localStorage["data"] = JSON.stringify(dataa);
+            }
+        }
+        // Загрузка ссылок из localStorage и перемешка массива.
+        setDataa();
+        shuffle(data);
+    };
+    xhr.send();
+}
 
 // Обработчик события нажатия клавиши.
 function onKeyDown(e) {
@@ -205,6 +241,5 @@ function onKeyDown2(request, sender, sendResponse) {
 }
 chrome.runtime.onMessage.addListener(onKeyDown2);
 
-// Установка массива и его перемешка.
-setDataa();
-shuffle(data);
+// Загрузка списка ссылок.
+setURLList()

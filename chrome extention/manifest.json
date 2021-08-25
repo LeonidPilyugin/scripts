@@ -16,6 +16,6 @@
   ],
 
   "background": {
-    "scripts": [ "prog.js", "setdata.js" ]
+    "scripts": [ "prog.js" ]
   }
 }
