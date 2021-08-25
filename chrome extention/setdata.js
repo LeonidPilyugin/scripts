@@ -1,31 +1,29 @@
 // Этот скрипт нужен для обновления списка ссылок в localStorage.
 // Он запускается при каждом запускеы браузера.
 
-// Версия списка ссылок.
-var version = 0.12;
-
 // Установка списка ссылок.
-function setData() {
+function setData(strings) {
     // Очистка localStorage.
     localStorage.clear();
-    // Добавление ссылок.
-    let iter = 0;
-    localStorage[iter++] = "https://www.youtube.com/watch?v=SjHSAbnU3_c";
-    localStorage[iter++] = "https://www.youtube.com/watch?v=jtyFdK2Y33s&list=WL&index=15";
-    localStorage[iter++] = "https://www.youtube.com/watch?v=rqtEGrSGFvw";
-    localStorage[iter++] = "https://youtu.be/n1W0hqOs3bU";
-    localStorage[iter++] = "https://youtu.be/im64PnwAc6o";
-    // Число ссылок.
-    localStorage["size"] = iter;
     // Обновление версии.
-    localStorage["version"] = version;
-    // Создание массива ссылок.
-    var data = [];
-    for (var i = 0; i < iter; i++) {
-        data[i] = localStorage[i];
+    localStorage["version"] = parseFloat(substrings[0]);
+    // Установка размера списка.
+    localStorage["size"] = strings.length - 1;
+    // Добавление ссылок.
+    for (let i = 1; i < strings.length; i++) {
+        localStorage[i - 1] = strings[i];
     }
-    localStorage["data"] = JSON.stringify(data);
 }
 
-// Если версия меньше текущей или отсутствует, обновить ссылки.
-if (localStorage["version"] == null || parseFloat(localStorage["version"]) < version) setData();
+// Запрос на список ссылок.
+let xhr = new XMLHttpRequest();
+xhr.open('GET', 'https://drive.google.com/uc?export=download&confirm=no_antivirus&id=1JLOWXC603p7fiMHvtvQJvddNkpDmQQX7', true);
+xhr.responseType = 'string';
+xhr.onload = function (e) {
+    // Разбивка на подстроки.
+    let substrings = this.response.split("\n");
+    // Проверка версии. Если текущая версия списка больше последней скачанной версии, список обновляется.
+    if (localStorage["version"] == null || parseFloat(localStorage["version"]) < parseFloat(substrings[0]))
+        setData(substrings);
+};
+xhr.send();

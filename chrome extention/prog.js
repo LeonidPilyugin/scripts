@@ -9,6 +9,8 @@ var password = ["KeyA", "KeyB", "KeyO", "KeyB", "KeyA"];
 var passwordArray = [];
 // Список ссылок.
 var data = [];
+// Текущая ссылка.
+var thisURL;
 
 // Обработчик события нажатия клавиши.
 function onKeyDown(e) {
@@ -76,7 +78,7 @@ function addURL() {
 }
 
 // Удаляет URL открытой вкладки из ссылок.
-function removeURL() {
+/*function removeURL() {
     chrome.tabs.query({ "active": true, "lastFocusedWindow": true }, function (tabs) {
         // Получить URL открытой вкладки.
         var url = tabs[0].url;
@@ -86,7 +88,9 @@ function removeURL() {
         var hasRemoved = false;
         for (let i = 0; i < localStorage["size"]; i++) {
             // Если найдена URL, установить флаг.
-            if (localStorage[i] == url) hasRemoved = true;
+            if (localStorage[i] == url) {
+                hasRemoved = true;
+            }
             // Если установлен флаг, сдвинуть остальные элементы и изменить size.
             if (hasRemoved) {
                 // Обработка последнего элемента и изменение size.
@@ -103,12 +107,40 @@ function removeURL() {
         // Сообщение об удалении URL.
         alert("URL " + url + " removed");
     });
+}*/
+
+// Удаляет URL открытой вкладки из ссылок.
+function removeURL() {
+    // Удалить ссылку из localStorage.
+    // Флаг, указывающий, было ли удалено значение.
+    var hasRemoved = false;
+    for (let i = 0; i < localStorage["size"]; i++) {
+        // Если найдена URL, установить флаг.
+        if (localStorage[i] == thisURL) {
+            hasRemoved = true;
+        }
+        // Если установлен флаг, сдвинуть остальные элементы и изменить size.
+        if (hasRemoved) {
+            // Обработка последнего элемента и изменение size.
+            if (i == localStorage["size"] - 1) {
+                localStorage.removeItem(i);
+                localStorage["size"] = --localStorage["size"];
+            }
+            // Сдвиг элементов.
+            else {
+                localStorage[i] = localStorage[i + 1];
+            }
+        }
+    }
+    // Сообщение об удалении URL.
+    alert("URL " + thisURL + " removed");
 }
 
 // Открывает следующую ссылку.
 function next() {
     // Открыть следующую ссылку и сдвинуть очередь.
     if (data[0] != undefined) {
+        thisURL = data[0];
         openURL(data[0]);
         data.shift();
         changeData();
