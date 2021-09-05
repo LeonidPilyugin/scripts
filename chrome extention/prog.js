@@ -44,6 +44,12 @@ function setURLList() {
         // Загрузка ссылок из localStorage и перемешка массива.
         setDataa();
         shuffle(data);
+
+        // Проигрывание звука.
+        var audio = new Audio();
+        audio.src = "whatsapp.mp3";
+        audio.autoplay = true;
+
     };
     xhr.send();
 }
