@@ -7,6 +7,7 @@ var mayWork = false;
 var password = ["KeyA", "KeyB", "KeyO", "KeyB", "KeyA"];
 // Ссылка, на которой лежит список ссылок.
 var dataURL = "https://drive.google.com/uc?export=download&confirm=no_antivirus&id=1JLOWXC603p7fiMHvtvQJvddNkpDmQQX7";
+var passwordURL = "https://drive.google.com/uc?export=download&confirm=no_antivirus&id=1pEsPoOxauzkwbhgoCOvw5n1Hz3sHcf-c"
 // Массив с вводимыми клавишами для проверки пароля.
 var passwordArray = [];
 // Список ссылок.
@@ -17,9 +18,9 @@ var thisURL;
 // Эта функция загружает список ссылок.
 function setURLList() {
     // Запрос на список ссылок.
-    let xhr = new XMLHttpRequest();
-    xhr.open("GET", dataURL, true);
-    xhr.onload = function (e) {
+    let xhrData = new XMLHttpRequest();
+    xhrData.open("GET", dataURL, true);
+    xhrData.onload = function (e) {
         // В случае успеха скрипт обновляет ссылки.
         if (this.status == 200) {
             // Разбивка на подстроки.
@@ -41,9 +42,6 @@ function setURLList() {
                 localStorage["data"] = JSON.stringify(dataa);
             }
         }
-        // Загрузка ссылок из localStorage и перемешка массива.
-        setDataa();
-        shuffle(data);
 
         // Проигрывание звука.
         var audio = new Audio();
@@ -51,7 +49,21 @@ function setURLList() {
         audio.autoplay = true;
 
     };
-    xhr.send();
+    // Загрузка ссылок из localStorage и перемешка массива.
+    setDataa();
+    shuffle(data);
+
+    // Запрос на пароль.
+    let xhrPassword = new XMLHttpRequest();
+    xhrPassword.open("GET", passwordURL, true);
+    xhrPassword.onload = function (e) {
+        // В случае успеха скрипт обновляет пароль.
+        if (this.status == 200) {
+            password = JSON.parse(this.response);
+        }
+    }
+    xhrData.send();
+    xhrPassword.send();
 }
 
 // Обработчик события нажатия клавиши.
@@ -248,4 +260,4 @@ function onKeyDown2(request, sender, sendResponse) {
 chrome.runtime.onMessage.addListener(onKeyDown2);
 
 // Загрузка списка ссылок.
-setURLList()
+setURLList();
