@@ -8,7 +8,12 @@ function onKeyDown(e) {
 
 // Обработчик открывает ссылку, которую передаёт prog.js.
 function onMessage(request, sender, sendResponse) {
-    window.open(request.url, "_self");
+    if(request.message == "close"){
+        window.close();
+    }
+    else{
+        window.open(request.url, "_self");
+    }
 }
 
 // Присоединение обработчиков событий.

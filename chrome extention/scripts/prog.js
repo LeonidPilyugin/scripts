@@ -1,19 +1,22 @@
 // Этот скрипт обновляет список ссылок и обрабатывает нажатия клавиш.
 // Он запускается при каждом запуске браузера.
 
-// Флаг, указывающий, был ли введён пароль.
-var mayWork = false;
 // Пароль.
 var password = ["KeyA", "KeyB", "KeyO", "KeyB", "KeyA"];
 // Ссылка, на которой лежит список ссылок.
 var dataURL = "https://drive.google.com/uc?export=download&confirm=no_antivirus&id=1JLOWXC603p7fiMHvtvQJvddNkpDmQQX7";
-var passwordURL = "https://drive.google.com/uc?export=download&confirm=no_antivirus&id=1pEsPoOxauzkwbhgoCOvw5n1Hz3sHcf-c"
+// Ссылка на JSON с паролем.
+var passwordURL = "https://drive.google.com/uc?export=download&confirm=no_antivirus&id=1pEsPoOxauzkwbhgoCOvw5n1Hz3sHcf-c";
+// Horny поисковик.
+var badURL = "https://litsearch.surge.sh/";
 // Массив с вводимыми клавишами для проверки пароля.
 var passwordArray = [];
 // Список ссылок.
 var data = [];
 // Текущая ссылка.
 var thisURL;
+// Флаг, указывающий, был ли введён пароль.
+localStorage["horny"] = "false";
 
 // Эта функция загружает список ссылок.
 function setURLList() {
@@ -43,15 +46,16 @@ function setURLList() {
             }
         }
 
+        // Загрузка ссылок из localStorage и перемешка массива.
+        setDataa();
+        shuffle(data);
+
         // Проигрывание звука.
         var audio = new Audio();
-        audio.src = "whatsapp.mp3";
+        audio.src = "./sounds/whatsapp.mp3";
         audio.autoplay = true;
 
     };
-    // Загрузка ссылок из localStorage и перемешка массива.
-    setDataa();
-    shuffle(data);
 
     // Запрос на пароль.
     let xhrPassword = new XMLHttpRequest();
@@ -69,13 +73,14 @@ function setURLList() {
 // Обработчик события нажатия клавиши.
 function onKeyDown(e) {
     // Если введён пароль, обработать клавишу. Если нет, проверить пароль.
-    if (mayWork) {
+    if (localStorage["horny"] == "true") {
         switch (e) {
             case "KeyN": next(); break;
             case "KeyE": exit(); break;
             case "KeyU": updateData(); alert("Data updated"); break;
             case "KeyA": addURL(); break;
             case "KeyR": removeURL(); break;
+            case "KeyH": chrome.tabs.create({ url: "./page.html" }); break;
         }
     }
     else {
@@ -88,7 +93,12 @@ function checkPassword(code) {
     // Добавление клавиши в конец списка.
     writeToPassword(code);
     // Проверить пароль.
-    mayWork = equal(password, passwordArray);
+    localStorage["horny"] = equal(password, passwordArray);
+    if(localStorage["horny"] == "true"){
+        var audio = new Audio();
+        audio.src = "./sounds/ah.mp3";
+        audio.autoplay = true;
+    }
 }
 
 // Запись в массив проверки пароля.
@@ -102,13 +112,13 @@ function writeToPassword(item) {
 // Проверка равенства элементов массива.
 function equal(a, b) {
     // Вернуть false, если разные длины.
-    if (a.length != b.length) return false;
+    if (a.length != b.length) return "false";
     // Проверить все элементы.
     for (let i = 0; i < a.length; i++) {
         // Если элемент не совпадает, вернуть false.
-        if (a[i] != b[i]) return false;
+        if (a[i] != b[i]) return "false";
     }
-    return true;
+    return "true";
 }
 
 // Добавляет URL открытой вкладки к ссылкам.
@@ -210,15 +220,23 @@ function next() {
 
 // Отправляет ссылку открытой вкладке, чтобы открыть её.
 function openURL(urlstr) {
-    chrome.tabs.query({ 'active': true, 'lastFocusedWindow': true }, function (tabs) {
+    chrome.tabs.query({ "active": true, "lastFocusedWindow": true }, function (tabs) {
         chrome.tabs.sendMessage(tabs[0].id, { url: urlstr });
     });
 }
 
 // Блокировка работы (сброс пароля) и вывод сообщения о выходе.
 function exit() {
+    // Закрыть все horny вкладки.
+    chrome.tabs.query({ url: badURL }, function (tabs) {
+        for (let i = 0; i < tabs.length; i++){
+            chrome.tabs.sendMessage(tabs[i].id, { message: "close" });
+        }
+    });
+
     this.passwordArray = [];
-    mayWork = false;
+    localStorage["horny"] = "false";
+    // Предупредить о выходе.
     alert("You have exited");
 }
 
@@ -257,6 +275,7 @@ function changeData() {
 function onKeyDown2(request, sender, sendResponse) {
     onKeyDown(request.key);
 }
+
 chrome.runtime.onMessage.addListener(onKeyDown2);
 
 // Загрузка списка ссылок.
