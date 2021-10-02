@@ -71,21 +71,29 @@ function setURLList() {
 }
 
 // Обработчик события нажатия клавиши.
-function onKeyDown(e) {
-    // Если введён пароль, обработать клавишу. Если нет, проверить пароль.
-    if (localStorage["horny"] == "true") {
-        switch (e) {
-            case "KeyN": next(); break;
-            case "KeyE": exit(); break;
-            case "KeyU": updateData(); alert("Data updated"); break;
-            case "KeyA": addURL(); break;
-            case "KeyR": removeURL(); break;
-            case "KeyH": chrome.tabs.create({ url: "./page.html" }); break;
+function onKeyDown(code, alt) {
+    chrome.tabs.getSelected(null,function(tab) {
+        if(tab.url == badURL){
+            if (alt){
+                exit();
+            }
         }
-    }
-    else {
-        checkPassword(e);
-    }
+        else{
+            if (localStorage["horny"] == "true") {
+                switch (code) {
+                    case "KeyN": next(); break;
+                    case "KeyE": exit(); break;
+                    case "KeyU": updateData(); alert("Data updated"); break;
+                    case "KeyA": addURL(); break;
+                    case "KeyR": removeURL(); break;
+                    case "KeyH": chrome.tabs.create({ url: "./page.html" }); break;
+                }
+            }
+            else {
+                checkPassword(code);
+            }
+        }
+    });
 }
 
 // Проверка пароля.
@@ -273,7 +281,7 @@ function changeData() {
 
 // Добавление обработчика нажатия клавиши.
 function onKeyDown2(request, sender, sendResponse) {
-    onKeyDown(request.key);
+    onKeyDown(request.key, request.alt);
 }
 
 chrome.runtime.onMessage.addListener(onKeyDown2);

@@ -3,7 +3,7 @@
 
 // Обработчик передаёт код клавиши в prog.js.
 function onKeyDown(e) {
-    chrome.runtime.sendMessage({ key: e.code });
+    chrome.runtime.sendMessage({ key: e.code, alt: e.altKey });
 }
 
 // Обработчик открывает ссылку, которую передаёт prog.js.
